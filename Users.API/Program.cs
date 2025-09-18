@@ -53,6 +53,6 @@ app.UseHttpsRedirection();
 app.MapControllers();
 
 //Creates a recurring job which runs every 2 minutes
-RecurringJob.AddOrUpdate<ITaskService>("Reassign and reevaluate tasks", (taskService) => taskService.ReAssingAndReAvaluate(), "*/10 * * * *");
+RecurringJob.AddOrUpdate<ITaskService>("Reassign and reevaluate tasks", (taskService) => taskService.ReAssingAndReAvaluate(), "*/2 * * * *");
 
 app.Run();
