@@ -45,12 +45,12 @@ namespace Infrastructure.Services
 
             foreach (var taskableUser in taskableUsers)
             {
-                var latestTask = _dbContext.AssignedTasksHistory
+                var previousTask = _dbContext.AssignedTasksHistory
                     .Where(x => x.User == taskableUser)
                     .OrderByDescending(x => x.AssignedAt)
                     .FirstOrDefault()?.Task;
 
-                if (latestTask != taskEntity || latestTask == null)
+                if (previousTask != taskEntity || previousTask == null)
                 {
                     return taskableUser;
                 }
