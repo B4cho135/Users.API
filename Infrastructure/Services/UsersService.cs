@@ -39,12 +39,24 @@ namespace Infrastructure.Services
 
         public UserEntity? FindTaskableUser(TaskEntity taskEntity)
         {
-            var taskableUser = _dbContext.Users
+            var taskableUsers = _dbContext.Users
                 .Where(u => !u.AssignedTasks.Any(at => at == taskEntity))
-                .OrderBy(x => x.AssignedTasks.Count)
-                .FirstOrDefault();
+                .OrderBy(x => x.AssignedTasks.Count);
 
-            return taskableUser;
+            foreach (var taskableUser in taskableUsers)
+            {
+                var latestTask = _dbContext.AssignedTasksHistory
+                    .Where(x => x.User == taskableUser)
+                    .OrderByDescending(x => x.AssignedAt)
+                    .FirstOrDefault()?.Task;
+
+                if (latestTask != taskEntity || latestTask == null)
+                {
+                    return taskableUser;
+                }
+            }
+
+            return null;
         }
 
         public async Task<OneOf<UserModel, string>> GetByNameAsync(string name)
